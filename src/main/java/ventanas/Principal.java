@@ -349,7 +349,7 @@ public class Principal extends javax.swing.JFrame {
 
     private String[] menuProductos, menuExtras;
     private int[] precioProductos, precioExtras;
-    
+
     private final String[] hamburguesa = {"Hamburguesa Normal", "Quesoburguesa", "Hamburguesa doble"};
     private final int[] preciosHamburguesa = {20, 25, 30};
     private final String[] extrasHamburguesa = {"Queso", "Tocino", "Carne"};
@@ -406,30 +406,29 @@ public class Principal extends javax.swing.JFrame {
     private void btnPostreActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnPostreActionPerformed
         // TODO add your handling code here:
         lblTitulo.setText("POSTRES");
-        cambiarMenu(postres,precioPostres);
+        cambiarMenu(postres, precioPostres);
     }//GEN-LAST:event_btnPostreActionPerformed
 
     private void btnAcompaniamientoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAcompaniamientoActionPerformed
         // TODO add your handling code here:
         lblTitulo.setText("ACOMPAÑAMIENTOS");
-        cambiarMenu(acompaniamientos,precioAcompaniamientos);
+        cambiarMenu(acompaniamientos, precioAcompaniamientos);
     }//GEN-LAST:event_btnAcompaniamientoActionPerformed
 
     private void btnAgregarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAgregarActionPerformed
         // TODO add your handling code here:
         //agregar boton
         JRadioButton[] listaProductos = {producto1, producto2, producto3};
-        int indice=0;
-        for (int i =0; i<listaProductos.length;i++) {
+        int indice = 0;
+        for (int i = 0; i < listaProductos.length; i++) {
             if (listaProductos[i].isSelected()) {
                 indice = i;
             }
-            
+
         }
         //AQUI VOY
-        
-        
-        
+
+
     }//GEN-LAST:event_btnAgregarActionPerformed
 
     private void asignarProductos(String[] productos, int[] precios) {
@@ -449,19 +448,25 @@ public class Principal extends javax.swing.JFrame {
         extra1.setText(extras[0]);
         extra2.setText(extras[1]);
         extra3.setText(extras[2]);
-        precioExtra1.setText("Q "+preciosExtras[0]+".00");
-        precioExtra2.setText("Q "+preciosExtras[1]);
-        precioExtra3.setText("Q "+preciosExtras[2]);
+        precioExtra1.setText("Q " + preciosExtras[0] + ".00");
+        precioExtra2.setText("Q " + preciosExtras[1]);
+        precioExtra3.setText("Q " + preciosExtras[2]);
 
         conExtras();
-        
-        
+
+        menuProductos = productos;
+        menuExtras = extras;
+        precioProductos = precios;
+        precioExtras = preciosExtras;
 
     }
 
     private void cambiarMenu(String[] productos, int[] precios) {
         asignarProductos(productos, precios);
         sinExtras();
+
+        menuProductos = productos;
+        precioProductos = precios;
     }
 
     private void limpiarCheckBox() {
