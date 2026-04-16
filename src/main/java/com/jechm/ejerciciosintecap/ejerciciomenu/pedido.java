@@ -33,7 +33,7 @@ public class pedido {
 
         for (int i = 0; i < extras.size(); i++) {
             String pr;
-            pr = "-->" + extras.get(i);
+            pr = "Extra-->" + extras.get(i);
             cantidades.add(cantidad);
             productos.add(pr);
             

@@ -361,7 +361,7 @@ public class Principal extends javax.swing.JFrame {
     private final String[] extrasHamburguesa = {"Queso", "Tocino", "Carne"};
     private final int[] preciosExtraHamburgesa = {5, 8, 10};
 
-    private final String[] tacos = {"De Birria", "Al pastor", "De Lengua"};
+    private final String[] tacos = {"Tacos De Birria", "Tacos Al pastor", "Tacos De Lengua"};
     private final int[] preciosTacos = {25, 20, 20};
     private final String[] extrasTacos = {"Queso", "Salsa", "Carne"};
     private final int[] preciosExtraTacos = {5, 5, 10};
@@ -465,16 +465,21 @@ public class Principal extends javax.swing.JFrame {
         String listaPedido = "Cant.\tProducto          \t\tPrecio U\tSub-Total";
         for (int i = 0; i < miPedido.getCantidades().size(); i++) {
             String separaPrecio = "";
-            for (int j = 0; j < 20 - miPedido.getProductos().get(i).toString().length(); j++) {
+            String productoActual = miPedido.getProductos().get(i).toString();
+            for (int j = 0; j < 20 - productoActual.length(); j++) {
                 separaPrecio = separaPrecio + " ";
             }
-            separaPrecio = separaPrecio + "\t\tQ ";
+            if (productoActual.equals("Flan") || productoActual.equals("Café")){
+                separaPrecio = separaPrecio+"\t";
+            }
+            separaPrecio = separaPrecio + "\tQ ";
 
             listaPedido = listaPedido + "\n" + miPedido.getCantidades().get(i) + "\t" + miPedido.getProductos().get(i) + separaPrecio + miPedido.getPrecios().get(i) + "\t Q " + ((Integer) miPedido.getCantidades().get(i) * (Integer) miPedido.getPrecios().get(i));
         }
+        listaPedido = listaPedido + "\n---------------------------\nTotal: Q "+miPedido.getTotalAPagar();
         verPedido.setText("");
         verPedido.setText(listaPedido);
-
+        cantidad.setValue(0);
 
     }//GEN-LAST:event_btnAgregarActionPerformed
 
