@@ -16,37 +16,44 @@ public class pedido {
     }
 
     private final ArrayList<String> productos = new ArrayList<>();
+    private final ArrayList<Integer> cantidades = new ArrayList<>();
     private final ArrayList<Integer> precios = new ArrayList<>();
     private int totalAPagar;
     private int totalProductos;
 
-    public void agregarProducto(String producto, int precio, String[] extras, int[] preciosExtras) {
+    public void agregarProducto(int cantidad, String producto, int precio, ArrayList<String> extras, ArrayList<Integer> preciosExtras) {
 
+        cantidades.add(cantidad);
         productos.add(producto);
-        precios.add(precio);
-        aumentarTotales(precio);
+        precios.add(precio); //Agrega el precio del producto principal
+        aumentarTotales(precio, cantidad);
+        
+        //manejo de agregar extras al pedido
+        precios.addAll(preciosExtras);
 
-        for (int i = 0; i < extras.length; i++) {
+        for (int i = 0; i < extras.size(); i++) {
             String pr;
-            pr = "-->"+ extras[i];
+            pr = "-->" + extras.get(i);
+            cantidades.add(cantidad);
             productos.add(pr);
-            precios.add(preciosExtras[i]);
-            aumentarTotales(preciosExtras[i]);
+            
+            aumentarTotales(preciosExtras.get(i), cantidad);
         }
 
     }
 
-    public void agregarProducto(String producto, int precio) {
+    public void agregarProducto(int cantidad, String producto, int precio) {
 
+        cantidades.add(cantidad);
         productos.add(producto);
         precios.add(precio);
-        aumentarTotales(precio);
+        aumentarTotales(precio, cantidad);
 
     }
 
-    private void aumentarTotales(int precio) {
+    private void aumentarTotales(int precio, int cantidad) {
         totalAPagar += precio;
-        totalProductos++;
+        totalProductos+=cantidad;
     }
 
     public int getTotalAPagar() {
@@ -64,4 +71,9 @@ public class pedido {
     public ArrayList getPrecios() {
         return new ArrayList<>(precios);
     }
+
+    public ArrayList getCantidades() {
+        return new ArrayList<>(cantidades);
+    }
+    
 }

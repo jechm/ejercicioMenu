@@ -4,7 +4,11 @@
  */
 package ventanas;
 
+import com.jechm.ejerciciosintecap.ejerciciomenu.pedido;
+import java.util.ArrayList;
+import javax.swing.JCheckBox;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JRadioButton;
 
 /**
@@ -62,7 +66,7 @@ public class Principal extends javax.swing.JFrame {
         cantidad = new javax.swing.JSpinner();
         jPanel5 = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
-        jTextArea1 = new javax.swing.JTextArea();
+        verPedido = new javax.swing.JTextArea();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Taco Taco no Mi - Menu");
@@ -290,10 +294,10 @@ public class Principal extends javax.swing.JFrame {
 
         jPanel5.setBackground(new java.awt.Color(153, 255, 255));
 
-        jTextArea1.setEditable(false);
-        jTextArea1.setColumns(20);
-        jTextArea1.setRows(5);
-        jScrollPane1.setViewportView(jTextArea1);
+        verPedido.setEditable(false);
+        verPedido.setColumns(20);
+        verPedido.setRows(5);
+        jScrollPane1.setViewportView(verPedido);
 
         javax.swing.GroupLayout jPanel5Layout = new javax.swing.GroupLayout(jPanel5);
         jPanel5.setLayout(jPanel5Layout);
@@ -347,8 +351,10 @@ public class Principal extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private String[] menuProductos, menuExtras;
-    private int[] precioProductos, precioExtras;
+    public pedido miPedido = new pedido();
+
+    private ArrayList<String> listaExtras = new ArrayList<>();
+    private ArrayList<Integer> listapreciosExtras = new ArrayList<>();
 
     private final String[] hamburguesa = {"Hamburguesa Normal", "Quesoburguesa", "Hamburguesa doble"};
     private final int[] preciosHamburguesa = {20, 25, 30};
@@ -374,10 +380,14 @@ public class Principal extends javax.swing.JFrame {
     private final String[] acompaniamientos = {"Papas Fritas", "Yuca Frita", "Nachos con Carne"};
     private final int[] precioAcompaniamientos = {15, 15, 20};
 
+    private String[] menuProductos = hamburguesa;
+    private String[] menuExtras = extrasHamburguesa;
+    private int[] precioProductos = preciosHamburguesa;
+    private int[] precioExtras = preciosExtraHamburgesa;
+
     private void btnBebidaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBebidaActionPerformed
         // TODO add your handling code here:
         lblTitulo.setText("BEBIDAS");
-        menuProductos = bebidas;
         cambiarMenu(bebidas, precioBebidas);
 
     }//GEN-LAST:event_btnBebidaActionPerformed
@@ -418,15 +428,52 @@ public class Principal extends javax.swing.JFrame {
     private void btnAgregarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAgregarActionPerformed
         // TODO add your handling code here:
         //agregar boton
-        JRadioButton[] listaProductos = {producto1, producto2, producto3};
-        int indice = 0;
-        for (int i = 0; i < listaProductos.length; i++) {
-            if (listaProductos[i].isSelected()) {
-                indice = i;
+        int cantidades = (Integer) cantidad.getValue();
+
+        listaExtras.clear();
+        listapreciosExtras.clear();
+
+        if (cantidades > 0) {
+            JRadioButton[] listaProductos = {producto1, producto2, producto3};
+            int indice = 0;
+            for (int i = 0; i < listaProductos.length; i++) {
+                if (listaProductos[i].isSelected()) {
+                    indice = i;
+                }
+
+            }
+            //AQUI VOY
+
+            JCheckBox[] seleccionExtras = {extra1, extra2, extra3};
+            for (int i = 0; i < seleccionExtras.length; i++) {
+                if (seleccionExtras[i].isSelected()) {
+                    listaExtras.add(menuExtras[i]);
+                    listapreciosExtras.add(precioExtras[i]);
+                }
             }
 
+            if (listapreciosExtras.isEmpty()) {
+                miPedido.agregarProducto(cantidades, menuProductos[indice], precioProductos[indice]);
+
+            } else {
+                miPedido.agregarProducto(cantidades, menuProductos[indice], precioProductos[indice], listaExtras, listapreciosExtras);
+            }
+        } else {
+            JOptionPane.showMessageDialog(null, "Cantidad no válida, intente de nuevo");
         }
-        //AQUI VOY
+
+        String listaPedido = "Cant.\tProducto          \t\tPrecio U\tSub-Total";
+        for (int i = 0; i < miPedido.getCantidades().size(); i++) {
+            String separaPrecio = "";
+            for (int j = 0; j < 20 - miPedido.getProductos().get(i).toString().length(); j++) {
+                separaPrecio = separaPrecio + " ";
+            }
+            separaPrecio = separaPrecio + "\t\tQ ";
+
+            listaPedido = listaPedido + "\n" + miPedido.getCantidades().get(i) + "\t" + miPedido.getProductos().get(i) + separaPrecio + miPedido.getPrecios().get(i) + "\t Q " + ((Integer) miPedido.getCantidades().get(i) * (Integer) miPedido.getPrecios().get(i));
+        }
+        verPedido.setText("");
+        verPedido.setText(listaPedido);
 
 
     }//GEN-LAST:event_btnAgregarActionPerformed
@@ -436,9 +483,12 @@ public class Principal extends javax.swing.JFrame {
         producto2.setText(productos[1]);
         producto3.setText(productos[2]);
 
-        precio1.setText("Q " + precios[0]);
-        precio2.setText("Q " + precios[1]);
-        precio3.setText("Q " + precios[2]);
+        precio1.setText("Q " + precios[0] + ".00");
+        precio2.setText("Q " + precios[1] + ".00");
+        precio3.setText("Q " + precios[2] + ".00");
+
+        menuProductos = productos;
+        precioProductos = precios;
     }
 
     private void cambiarMenu(String[] productos, int[] precios, String[] extras, int[] preciosExtras) {
@@ -449,8 +499,8 @@ public class Principal extends javax.swing.JFrame {
         extra2.setText(extras[1]);
         extra3.setText(extras[2]);
         precioExtra1.setText("Q " + preciosExtras[0] + ".00");
-        precioExtra2.setText("Q " + preciosExtras[1]);
-        precioExtra3.setText("Q " + preciosExtras[2]);
+        precioExtra2.setText("Q " + preciosExtras[1] + ".00");
+        precioExtra3.setText("Q " + preciosExtras[2] + ".00");
 
         conExtras();
 
@@ -462,6 +512,7 @@ public class Principal extends javax.swing.JFrame {
     }
 
     private void cambiarMenu(String[] productos, int[] precios) {
+        limpiarCheckBox();
         asignarProductos(productos, precios);
         sinExtras();
 
@@ -540,7 +591,6 @@ public class Principal extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel5;
     private javax.swing.JPanel jPanel6;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JTextArea jTextArea1;
     private javax.swing.JToggleButton jToggleButton1;
     private javax.swing.JToggleButton jToggleButton2;
     private javax.swing.JLabel lblTitulo;
@@ -553,5 +603,6 @@ public class Principal extends javax.swing.JFrame {
     private javax.swing.JRadioButton producto1;
     private javax.swing.JRadioButton producto2;
     private javax.swing.JRadioButton producto3;
+    private javax.swing.JTextArea verPedido;
     // End of variables declaration//GEN-END:variables
 }
