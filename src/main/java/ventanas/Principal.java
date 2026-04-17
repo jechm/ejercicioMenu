@@ -45,8 +45,8 @@ public class Principal extends javax.swing.JFrame {
         btnAcompaniamiento = new javax.swing.JButton();
         jPanel2 = new javax.swing.JPanel();
         jPanel6 = new javax.swing.JPanel();
-        jToggleButton1 = new javax.swing.JToggleButton();
-        jToggleButton2 = new javax.swing.JToggleButton();
+        btnCancelar = new javax.swing.JToggleButton();
+        btnFacturar = new javax.swing.JToggleButton();
         jPanel4 = new javax.swing.JPanel();
         producto1 = new javax.swing.JRadioButton();
         producto2 = new javax.swing.JRadioButton();
@@ -142,28 +142,30 @@ public class Principal extends javax.swing.JFrame {
 
         jPanel6.setBackground(new java.awt.Color(255, 255, 153));
 
-        jToggleButton1.setText("CANCELAR PEDIDO");
+        btnCancelar.setText("CANCELAR PEDIDO");
+        btnCancelar.addActionListener(this::btnCancelarActionPerformed);
 
-        jToggleButton2.setText("IMPRIMIR RECIBO");
+        btnFacturar.setText("FACTURAR");
+        btnFacturar.addActionListener(this::btnFacturarActionPerformed);
 
         javax.swing.GroupLayout jPanel6Layout = new javax.swing.GroupLayout(jPanel6);
         jPanel6.setLayout(jPanel6Layout);
         jPanel6Layout.setHorizontalGroup(
             jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel6Layout.createSequentialGroup()
-                .addGap(45, 45, 45)
-                .addComponent(jToggleButton1)
+                .addGap(41, 41, 41)
+                .addComponent(btnCancelar)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jToggleButton2)
+                .addComponent(btnFacturar)
                 .addGap(49, 49, 49))
         );
         jPanel6Layout.setVerticalGroup(
             jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel6Layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jToggleButton2, javax.swing.GroupLayout.DEFAULT_SIZE, 38, Short.MAX_VALUE)
-                    .addComponent(jToggleButton1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(btnFacturar, javax.swing.GroupLayout.DEFAULT_SIZE, 38, Short.MAX_VALUE)
+                    .addComponent(btnCancelar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
 
@@ -305,7 +307,7 @@ public class Principal extends javax.swing.JFrame {
             jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel5Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 219, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 407, Short.MAX_VALUE)
                 .addContainerGap())
         );
         jPanel5Layout.setVerticalGroup(
@@ -343,8 +345,8 @@ public class Principal extends javax.swing.JFrame {
                     .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jPanel6, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jPanel6, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -352,7 +354,8 @@ public class Principal extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     public pedido miPedido = new pedido();
-
+    
+    
     private ArrayList<String> listaExtras = new ArrayList<>();
     private ArrayList<Integer> listapreciosExtras = new ArrayList<>();
 
@@ -427,22 +430,32 @@ public class Principal extends javax.swing.JFrame {
 
     private void btnAgregarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAgregarActionPerformed
         // TODO add your handling code here:
-        //agregar boton
-        int cantidades = (Integer) cantidad.getValue();
-
-        listaExtras.clear();
+        
+        //Limpiar las lista de extras pues los extras se agregan segun caules estan seleccionados
+        listaExtras.clear(); 
         listapreciosExtras.clear();
-
-        if (cantidades > 0) {
-            JRadioButton[] listaProductos = {producto1, producto2, producto3};
-            int indice = 0;
-            for (int i = 0; i < listaProductos.length; i++) {
-                if (listaProductos[i].isSelected()) {
-                    indice = i;
-                }
-
+        
+        //Obtener la cantiada indicada en el Spinner
+        int cantidades = (Integer) cantidad.getValue();
+        
+        //Array de radio botones con el fin de facilitar si hay uno seleccionado
+        JRadioButton[] listaProductos = {producto1, producto2, producto3};
+        boolean haySeleccion=false;
+        int indice =0; //su objetivo sera determinar cual de los 3 radioButton esta seleccionado
+        
+        //For Each con objetivo de verificar si hay un producto seleccionado y obtener el indice de dicho producto.
+        for (JRadioButton prod : listaProductos){
+            if (prod.isSelected()){
+                haySeleccion = prod.isSelected();
+                break;
+                
             }
-            //AQUI VOY
+            indice++;
+        }
+
+
+
+        if (cantidades > 0 && haySeleccion) { //la cantidad en el spinner debe de ser mayor a 0 y debe de haber un radio button seleccionado
 
             JCheckBox[] seleccionExtras = {extra1, extra2, extra3};
             for (int i = 0; i < seleccionExtras.length; i++) {
@@ -452,36 +465,55 @@ public class Principal extends javax.swing.JFrame {
                 }
             }
 
-            if (listapreciosExtras.isEmpty()) {
+            //aqui se llena la lista de productos del pedido
+            if (listapreciosExtras.isEmpty()) { 
+            //si la lista de extras esta vacia entonces unicamente se manda la cantidad y productos seleccionados junto a su respectivo precio
                 miPedido.agregarProducto(cantidades, menuProductos[indice], precioProductos[indice]);
 
             } else {
+                //si lista extras no esta vacio entonces ademas de lo anterior hay que mandar la lista de extras y precios
                 miPedido.agregarProducto(cantidades, menuProductos[indice], precioProductos[indice], listaExtras, listapreciosExtras);
             }
         } else {
-            JOptionPane.showMessageDialog(null, "Cantidad no válida, intente de nuevo");
+            JOptionPane.showMessageDialog(null, cantidades>0?"Seleccione un producto Principal":"Cantidad no válida, intente de nuevo");
         }
 
-        String listaPedido = "Cant.\tProducto          \t\tPrecio U\tSub-Total";
-        for (int i = 0; i < miPedido.getCantidades().size(); i++) {
-            String separaPrecio = "";
-            String productoActual = miPedido.getProductos().get(i).toString();
-            for (int j = 0; j < 20 - productoActual.length(); j++) {
-                separaPrecio = separaPrecio + " ";
-            }
-            if (productoActual.equals("Flan") || productoActual.equals("Café")){
-                separaPrecio = separaPrecio+"\t";
-            }
-            separaPrecio = separaPrecio + "\tQ ";
-
-            listaPedido = listaPedido + "\n" + miPedido.getCantidades().get(i) + "\t" + miPedido.getProductos().get(i) + separaPrecio + miPedido.getPrecios().get(i) + "\t Q " + ((Integer) miPedido.getCantidades().get(i) * (Integer) miPedido.getPrecios().get(i));
-        }
-        listaPedido = listaPedido + "\n---------------------------\nTotal: Q "+miPedido.getTotalAPagar();
+        
+        
+        //limpia el contenido del textArea antes de agregar lo nuevo
         verPedido.setText("");
-        verPedido.setText(listaPedido);
+        verPedido.setText(miPedido.generarTicket());//agrega el contenido al textArea
         cantidad.setValue(0);
 
     }//GEN-LAST:event_btnAgregarActionPerformed
+    private void cancelar(){
+        miPedido.cancelarPedido();
+        verPedido.setText("");
+    }
+    private void btnCancelarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCancelarActionPerformed
+        // TODO add your handling code here:
+        if(miPedido.getTotalProductos()!=0){
+            cancelar();
+         //mostrar mensajes
+            JOptionPane.showMessageDialog(null, "PEDIDO CANCELADO\nCON EXITO");
+        } else {
+            JOptionPane.showMessageDialog(null, "NADA QUE CANCELAR");
+        }
+        
+    }//GEN-LAST:event_btnCancelarActionPerformed
+
+    private void btnFacturarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnFacturarActionPerformed
+        // TODO add your handling code here:
+        if (miPedido.getTotalProductos()!=0){
+            factura f = new factura();
+            f.setFactura(miPedido.generarTicket());
+            f.setVisible(true);
+            cancelar();
+        }else{
+            JOptionPane.showMessageDialog(null, "SIN DATOS PARA FACTURAR");
+        }
+        
+    }//GEN-LAST:event_btnFacturarActionPerformed
 
     private void asignarProductos(String[] productos, int[] precios) {
         producto1.setText(productos[0]);
@@ -580,6 +612,8 @@ public class Principal extends javax.swing.JFrame {
     private javax.swing.JButton btnAcompaniamiento;
     private javax.swing.JButton btnAgregar;
     private javax.swing.JButton btnBebida;
+    private javax.swing.JToggleButton btnCancelar;
+    private javax.swing.JToggleButton btnFacturar;
     private javax.swing.JButton btnHamburguesa;
     private javax.swing.JButton btnPostre;
     private javax.swing.JButton btnShuko;
@@ -596,8 +630,6 @@ public class Principal extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel5;
     private javax.swing.JPanel jPanel6;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JToggleButton jToggleButton1;
-    private javax.swing.JToggleButton jToggleButton2;
     private javax.swing.JLabel lblTitulo;
     private javax.swing.JLabel precio1;
     private javax.swing.JLabel precio2;
